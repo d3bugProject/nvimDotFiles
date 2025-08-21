@@ -1,0 +1,25 @@
+{
+  "reactComponent": {
+    "prefix": "xxx",
+    "body": [
+      "import React from 'react';",
+      "",
+      "const ${TM_FILENAME_BASE} = () => {",
+      "  return (",
+      "    <div>",
+      "      $1",
+      "    </div>",
+      "  );",
+      "};",
+      "",
+      "export default ${TM_FILENAME_BASE};"
+    ],
+    "import": "import React from 'react';"
+  },
+  "simple view": {
+    "prefix": "vw",
+    "body": ["<View> $1 </View>"],
+    "description": "simple view",
+    "import": "import {View} from 'react-native'"
+  }
+}
