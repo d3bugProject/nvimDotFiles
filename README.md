@@ -116,6 +116,27 @@ Whether you code in JavaScript/TypeScript, React, or just want a clean, efficien
 
 ---
 
+## 🗝️ nvim-surround: Keymaps essentiels
+
+> ⚡️ Plugin recommandé : [`kylechui/nvim-surround`](https://github.com/kylechui/nvim-surround)  
+> Ajoute, change et supprime les entourants (parenthèses, guillemets, tags, etc.) en un clin d'œil !
+>
+> **Astuce** : Pour entourer avec un tag HTML, utilise `ysiwt`, tape le nom du tag, puis `<Entrée>`.  
+> Voici un mémo des principales commandes :
+
+| Commande              | Effet                                                          | Exemple                            |
+| --------------------- | -------------------------------------------------------------- | ---------------------------------- |
+| `ys<motion><char>`    | Ajoute un entourant autour du texte sélectionné par `<motion>` | `ysiw"` → `"mot"`                  |
+| `yss<char>`           | Ajoute un entourant à la ligne entière                         | `yss{` → `{ma ligne}`              |
+| `cs<old><new>`        | Change l’entourant existant pour un autre                      | `cs"'` → remplace "..." par '...'  |
+| `ds<char>`            | Supprime l’entourant                                           | `ds"` → supprime les guillemets    |
+| `S<char>` (en visuel) | Entoure la sélection visuelle                                  | (sélection) `S[` → `[texte]`       |
+| `ysiwt` puis `<tag>`  | Entoure avec un tag HTML personnalisé                          | `ysiwt` → `div` → `<div>mot</div>` |
+
+**Principaux `<char>` :** `"`, `'`, `(`, `[`, `{`, `<`, `t` (tag HTML)
+
+---
+
 ## 📝 Next Steps
 
 - [ ] Fill the `lua/snippets/` folder with more powerful templates!
@@ -130,6 +151,7 @@ Whether you code in JavaScript/TypeScript, React, or just want a clean, efficien
 - [Solarized Osaka](https://github.com/kenchaaan/solarized-osaka.nvim)
 - [Neo-tree](https://github.com/nvim-neo-tree/neo-tree.nvim)
 - [Hop](https://github.com/phaazon/hop.nvim)
+- [kylechui/nvim-surround](https://github.com/kylechui/nvim-surround)
 - ...and all the amazing plugin authors!
 
 ---
