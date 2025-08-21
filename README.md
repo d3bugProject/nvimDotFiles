@@ -11,7 +11,7 @@ Whether you code in JavaScript/TypeScript, React, or just want a clean, efficien
 - **🧩 Modular structure:** Drop new keymaps/plugins/snippets in dedicated folders, they’re auto-loaded.
 - **🎨 Beautiful theme:** Solarized Osaka, optimized for JavaScript/React.
 - **⚡️ Fast startup:** No lag, no slow animations.
-- **🧠 Smart autocomplete:** CMP & Copilot for blazing fast coding.
+- **🧠 Smart autocomplete:** CMP & Copilot for blazing fast coding. (Copilot is not active by default you have to activate it by make enabled=true in the plugin file)
 - **📦 Pre-configured tools:** LSP, formatting, file explorer, status line, import management, and more.
 - **💡 Easily hackable:** Every config is in a self-contained file.
 - **🔖 Ready for snippets:** Modular snippet system with import support.
@@ -105,7 +105,7 @@ Whether you code in JavaScript/TypeScript, React, or just want a clean, efficien
 
 1. **Clone this repo** into your `~/.config/nvim` (or wherever you keep your Neovim config):
    ```bash
-   git clone <repo-url> ~/.config/nvim
+   git clone https://github.com/d3bugProject/nvimDotFiles.git ~/.config/nvim
    ```
 2. **Open Neovim** and let LazyVim install everything.
 3. **Restart Neovim** after first launch.
@@ -143,4 +143,3 @@ Feel free to open issues or PRs for suggestions, improvements, or bug reports!
 <p align="center">
   <img src="https://raw.githubusercontent.com/nvim-lua/nvim-lua-guide/master/images/nvim-logo.png" width="80" alt="neovim logo" />
 </p>
-
