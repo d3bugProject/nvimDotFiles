@@ -1,0 +1,3 @@
+-- vim.keymap.set({ "i", "s" }, "<CR>", function()
+--   return require("luasnip").jumpable(1) and require("luasnip").jump(1) or "<CR>"
+-- end, { expr = true })

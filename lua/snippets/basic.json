@@ -1,23 +1,24 @@
 {
-  "simple view": {
-    "prefix": "vw",
-    "body": ["<View> $1 </View>"],
-    "description": "simple view",
-    "import": "import {View} from 'react-native'"
+  "header_comment": {
+    "prefix": "header",
+    "body": [
+      "/**",
+      " * @file ${TM_FILENAME}",
+      " * @author ${1}",
+      " * @date ${CURRENT_DATE}/${CURRENT_MONTH}/${CURRENT_YEAR} : ${CURRENT_HOUR}",
+      " * @description ${2}",
+      " */"
+    ]
   },
-  "router with import ": {
-    "prefix": "router",
-    "body": ["const router = useRouter()"],
-    "description": "router with import "
-  },
+
   "arrow variable": {
     "prefix": "av",
-    "body": ["const $1 = ()=>{", "  $2", "}"],
+    "body": ["const ${1} = ()=>{", "  ${2}", "}"],
     "description": "arrow variable"
   },
   "arrow variable": {
     "prefix": "a",
-    "body": ["()=>{", "  $2", "}"],
+    "body": ["(${3})=>{", "  ${1} ${0} ", "}"],
     "description": "arrow variable"
   },
   "function": {
@@ -28,10 +29,20 @@
   "export function or component": {
     "prefix": "exfu",
     "body": [
-      "export default function ${TM_FILENAME_BASE/(.)(.*)/${1:/upcase}${2}/}(){",
+      "export default function ${TM_FILENAME_PASCAL}(){",
       "  return $2",
       "}"
     ],
     "description": "export function or component"
+  },
+  "function": {
+    "prefix": "xxxx",
+    "body": ["$1    $2     $3    "],
+    "description": "function"
+  },
+  "classname": {
+    "prefix": "cn",
+    "body": ["className={` $1 `}"],
+    "description": "classname"
   }
 }

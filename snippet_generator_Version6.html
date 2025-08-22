@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🧩 Smart Snippet Generator</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body {
+      background: #161821;
+      color: #e6e6e6;
+      font-family: 'Fira Mono', monospace;
+      padding: 0 0 4em 0;
+      margin: 0;
+    }
+    header {
+      background: #232635;
+      color: #8ec07c;
+      padding: 1.5em 1em 1em 1em;
+      border-bottom: 2px solid #8ec07c44;
+      margin-bottom: 2em;
+      text-align: center;
+    }
+    h1 {
+      margin: 0 0 0.4em 0;
+      font-weight: 900;
+      font-size: 2.2em;
+      letter-spacing: 2px;
+    }
+    .container {
+      max-width: 650px;
+      margin: 0 auto;
+      background: #22242f;
+      border-radius: 10px;
+      padding: 2em 2em 1.2em 2em;
+      box-shadow: 0 10px 40px #000a;
+    }
+    label {
+      display: block;
+      margin: 1.3em 0 0.2em 0;
+      color: #8ec07c;
+      font-size: 1.06em;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    input, textarea, select {
+      background: #232635;
+      color: #e6e6e6;
+      border: 1px solid #444857;
+      border-radius: 5px;
+      padding: 0.4em 0.7em;
+      width: 100%;
+      font-family: inherit;
+      font-size: 1em;
+      transition: border-color 0.18s;
+      resize: vertical;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: #8ec07c;
+      outline: none;
+    }
+    textarea {
+      min-height: 90px;
+      margin-bottom: 0.2em;
+    }
+    .optional {
+      color: #b8bb26;
+      font-size: 0.95em;
+      font-style: italic;
+      margin-left: 4px;
+    }
+    .btn {
+      background: #8ec07c;
+      color: #232635;
+      border: none;
+      border-radius: 5px;
+      padding: 0.7em 1.5em;
+      font-size: 1.1em;
+      font-family: inherit;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 2em 0 0.5em 0;
+      transition: background 0.14s;
+      box-shadow: 0 2px 8px #0004;
+    }
+    .btn:hover {
+      background: #a5c261;
+    }
+    .output-block {
+      margin: 2.5em 0 1em 0;
+      background: #181a21;
+      padding: 1.2em 1em;
+      border-radius: 7px;
+      border: 1px solid #383b4c;
+      font-size: 1.07em;
+      box-shadow: 0 2px 12px #0004;
+      word-break: break-all;
+      position: relative;
+    }
+    .copy-btn {
+      position: absolute;
+      right: 1em;
+      top: 1em;
+      background: #444857;
+      color: #b8bb26;
+      border: none;
+      border-radius: 3px;
+      padding: 0.2em 0.7em;
+      font-size: 0.92em;
+      cursor: pointer;
+      transition: background 0.14s;
+    }
+    .copy-btn:hover {
+      background: #8ec07c;
+      color: #181a21;
+    }
+    .doc-block {
+      margin-top: 3.5em;
+      background: #1a1d23;
+      color: #a9b1d6;
+      padding: 1.5em 1.2em;
+      border-radius: 8px;
+      font-size: 0.98em;
+      border-left: 3px solid #8ec07c;
+    }
+    .doc-block h2 {
+      color: #b8bb26;
+      font-size: 1.2em;
+      margin-top: 0.9em;
+      margin-bottom: 0.3em;
+    }
+    .doc-flex {
+      margin: 1em 0 0 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2em;
+      font-size: 0.98em;
+    }
+    .doc-col {
+      min-width: 170px;
+      flex: 1;
+    }
+    .doc-col code {
+      background: #232635;
+      color: #fabd2f;
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-size: 0.98em;
+    }
+    .doc-col b {
+      color: #8ec07c;
+    }
+    .tm-block {
+      margin-top: 2.3em;
+      padding: 1em 1em 0.6em 1em;
+      background: #21232c;
+      border-radius: 7px;
+      color: #c7cdd9;
+      font-size: 0.96em;
+      border-left: 2px solid #b8bb26;
+    }
+    .tm-block .tm-title {
+      color: #b8bb26;
+      font-weight: bold;
+      margin-bottom: 0.3em;
+      font-size: 1.07em;
+    }
+    .tm-block code {
+      background: #232635;
+      color: #fabd2f;
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-size: 0.98em;
+    }
+    @media (max-width: 700px) {
+      .container { padding: 1em; }
+      .doc-flex { flex-direction: column; gap: 0.7em; }
+    }
+    .suggestion {
+      color: #b8bb26;
+      background: #232635;
+      font-size: 0.93em;
+      border-radius: 4px;
+      padding: 0.2em 0.6em;
+      margin-left: 0.6em;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🧩 Smart Snippet Generator</h1>
+    <div style="font-size:1.07em; color:#b8bb26;">
+      Auto-completion & smart pairs for LuaSnip/VSCode snippets!
+    </div>
+  </header>
+
+  <div class="container">
+    <form id="snippetForm">
+      <label for="snippetName">Snippet Name</label>
+      <input type="text" id="snippetName" placeholder="e.g. react_state" required />
+
+      <label for="prefix">Prefix <span class="optional">(trigger)</span></label>
+      <input type="text" id="prefix" placeholder="e.g. us" required />
+
+      <label for="body">Body <span class="optional">(try: $, var, filename, {, (, [, ', \") ...)</span></label>
+      <textarea id="body" placeholder="e.g. const [${1:state}, set${1cap:State}] = useState(${2:null});" required autocomplete="off" spellcheck="false"></textarea>
+      <div id="bodySuggestion" class="suggestion" style="display:none;"></div>
+
+      <label for="description">Description <span class="optional">(optional)</span></label>
+      <input type="text" id="description" placeholder="What does this snippet do?" />
+
+      <label for="import">Import <span class="optional">(optional, auto-import on expansion)</span></label>
+      <input type="text" id="import" placeholder="e.g. import { useState } from 'react';" />
+
+      <button type="submit" class="btn">✨ Generate Snippet</button>
+    </form>
+
+    <div id="output" class="output-block" style="display:none;">
+      <button class="copy-btn" onclick="copySnippet()">Copy</button>
+      <pre id="snippetResult"></pre>
+    </div>
+  </div>
+
+  <div class="doc-block">
+    <strong>💡 How to use:</strong><br>
+    <ul>
+      <li>Fill all required fields (name, prefix, body). Optionally add a description or import.</li>
+      <li>
+        <b>In the body field, type special shortcuts for rapid snippet writing:</b>
+        <br>
+        <code>$</code> → inserts <code>$1</code>, then <code>$2</code>, etc. <br>
+        <code>var</code> → inserts <code>$1</code> (or next placeholder)<br>
+        <code>Var</code> → inserts <code>${1maj}</code>, <code>filename</code> → <code>${TM_FILENAME}</code>, etc.<br>
+        <code>{ ( [ " '</code> → auto close pairs<br>
+        <i>See full list below!</i>
+      </li>
+      <li>Click <b>"Generate Snippet"</b> and paste the JSON into your <code>lua/snippets/</code> folder.</li>
+    </ul>
+
+    <h2>⭐ Snippet Format</h2>
+    <pre><code>{
+  "snippet_name": {
+    "prefix": "trigger",
+    "body": [
+      "line 1",
+      "line 2 with ${1:placeholder}"
+    ],
+    "description": "Optional",
+    "import": "import Something from 'somewhere';"
+  }
+}</code></pre>
+
+    <h2>🚀 Placeholders & Tricks</h2>
+
+    <div class="doc-flex">
+      <div class="doc-col">
+        <b>Basic Placeholders</b><br>
+        <code>$1</code> — First placeholder<br>
+        <code>$2</code> — Next placeholder<br>
+        <code>$0</code> — Final cursor position
+      </div>
+      <div class="doc-col">
+        <b>Defaults</b><br>
+        <code>${2:default}</code> — Placeholder with default<br>
+        <code>${1:myVar}</code> — Default var name
+      </div>
+      <div class="doc-col">
+        <b>Transforms</b><br>
+        <code>${1cap}</code> — Capitalize first<br>
+        <code>${1pascal}</code> — PascalCase<br>
+        <code>${1camel}</code> — camelCase<br>
+        <code>${1snake}</code> — snake_case<br>
+        <code>${1upper}</code> — UPPERCASE<br>
+        <code>${1lower}</code> — lowercase
+      </div>
+    </div>
+
+    <div class="tm-block">
+      <div class="tm-title">🗂️ <b>Special <code>TM_</code> variables (auto-filled)</b></div>
+      <div>
+        <code>${TM_FILENAME}</code> — Full file name<br>
+        <code>${TM_FILENAME_BASE}</code> — File name, no extension<br>
+        <code>${TM_DIRECTORY}</code> — Full path to file's directory<br>
+        <code>${CURRENT_YEAR}</code>, <code>${CURRENT_MONTH}</code>, <code>${CURRENT_DATE}</code> — Date<br>
+        <code>${CURRENT_HOUR}</code>, <code>${CURRENT_MINUTE}</code> — Time<br>
+        <code>${CLIPBOARD}</code> — Current clipboard content<br>
+      </div>
+      <div style="margin-top:0.7em; color:#b8bb26;">
+        <b>🌈 Pro Tip:</b> Use these for auto-filled metadata/comments!
+      </div>
+    </div>
+    <div style="margin-top:0.9em; color:#9da5b4; font-size:0.95em;">
+      All snippets are saved in <code>~/.config/nvim/lua/snippets/</code> (see your config README).
+    </div>
+  </div>
+
+  <script>
+    // --- SMART BODY FIELD AUTOCOMPLETION ---
+    (function() {
+      const bodyEl = document.getElementById('body');
+      const suggestionEl = document.getElementById('bodySuggestion');
+      let placeholderCount = 1;
+
+      // Define quick insert mappings
+      const tmVars = {
+        'filename': '${TM_FILENAME}',
+        'filename_base': '${TM_FILENAME_BASE}',
+        'directory': '${TM_DIRECTORY}',
+        'date': '${CURRENT_DATE}',
+        'year': '${CURRENT_YEAR}',
+        'month': '${CURRENT_MONTH}',
+        'hour': '${CURRENT_HOUR}',
+        'minute': '${CURRENT_MINUTE}',
+        'clipboard': '${CLIPBOARD}'
+      };
+      const transforms = {
+        'Var': 'maj',
+        'Pascal': 'pascal',
+        'Camel': 'camel',
+        'Snake': 'snake',
+        'Upper': 'upper',
+        'Lower': 'lower'
+      };
+      function getNextPlaceholder(text) {
+        // find the highest $N in the text
+        let max = 0;
+        let regex = /\$([0-9]+)/g;
+        let match;
+        while ((match = regex.exec(text)) !== null) {
+          let n = parseInt(match[1]);
+          if (n > max) max = n;
+        }
+        return max + 1;
+      }
+      function handleQuickInsert(e) {
+        const { value, selectionStart, selectionEnd } = bodyEl;
+        const before = value.slice(0, selectionStart);
+        const after = value.slice(selectionEnd);
+
+        // Handle auto-pairs
+        const pairs = { '{': '}', '(': ')', '[': ']', '"': '"', "'": "'" };
+        if (pairs[e.key]) {
+          e.preventDefault();
+          const closing = pairs[e.key];
+          bodyEl.value = before + e.key + closing + after;
+          bodyEl.setSelectionRange(selectionStart + 1, selectionStart + 1);
+          showSuggestion('Auto-paired: ' + e.key + closing);
+          return;
+        }
+
+        // Handle $ for placeholders
+        if (e.key === '$') {
+          e.preventDefault();
+          const next = getNextPlaceholder(value);
+          bodyEl.value = before + '$' + next + after;
+          bodyEl.setSelectionRange(selectionStart + 2, selectionStart + 2);
+          showSuggestion('Inserted $' + next);
+          return;
+        }
+
+        // Suggestion on word triggers (var, Var, Pascal, etc.)
+        setTimeout(() => {
+          const cursor = bodyEl.selectionStart;
+          const text = bodyEl.value;
+          const wordMatch = /(\w+)$/.exec(text.slice(0, cursor));
+          if (!wordMatch) {
+            hideSuggestion();
+            return;
+          }
+          const word = wordMatch[1];
+          // var
+          if (word === 'var') {
+            showSuggestion('Tab to insert $N');
+          }
+          // Var, Pascal, Camel, Snake, Upper, Lower
+          else if (transforms[word]) {
+            showSuggestion(`Tab to insert \${N:${transforms[word]}}`);
+          }
+          // TM variables
+          else if (tmVars[word]) {
+            showSuggestion(`Tab to insert ${tmVars[word]}`);
+          }
+          else hideSuggestion();
+        }, 10);
+      }
+
+      // On Tab, replace the special word with its snippet
+      bodyEl.addEventListener('keydown', function(e) {
+        if (e.key === 'Tab') {
+          const { value, selectionStart } = bodyEl;
+          const before = value.slice(0, selectionStart);
+          const wordMatch = /(\w+)$/.exec(before);
+          if (!wordMatch) return;
+          const word = wordMatch[1];
+          let replaceWith = null;
+          // var -> $N
+          if (word === 'var') {
+            const n = getNextPlaceholder(value);
+            replaceWith = '$' + n;
+          }
+          // Var, Pascal, Camel, Snake, Upper, Lower
+          else if (transforms[word]) {
+            const n = getNextPlaceholder(value);
+            replaceWith = '${' + n + ':' + transforms[word] + '}';
+          }
+          // filename etc.
+          else if (tmVars[word]) {
+            replaceWith = tmVars[word];
+          }
+          if (replaceWith) {
+            e.preventDefault();
+            const start = selectionStart - word.length;
+            bodyEl.value = value.slice(0, start) + replaceWith + value.slice(selectionStart);
+            bodyEl.setSelectionRange(start + replaceWith.length, start + replaceWith.length);
+            hideSuggestion();
+          }
+        }
+      });
+      // On keydown, handle $, auto-pairs, and show suggestion
+      bodyEl.addEventListener('keydown', handleQuickInsert);
+
+      function showSuggestion(msg) {
+        suggestionEl.textContent = msg;
+        suggestionEl.style.display = '';
+      }
+      function hideSuggestion() {
+        suggestionEl.textContent = '';
+        suggestionEl.style.display = 'none';
+      }
+      bodyEl.addEventListener('blur', hideSuggestion);
+    })();
+
+    function copySnippet() {
+      const snippet = document.getElementById('snippetResult').innerText;
+      navigator.clipboard.writeText(snippet);
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = "✅ Copied!";
+      setTimeout(() => (btn.textContent = "Copy"), 1300);
+    }
+    document.getElementById('snippetForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('snippetName').value.trim();
+      const prefix = document.getElementById('prefix').value.trim();
+      const body = document.getElementById('body').value.replace(/\r\n/g, '\n').split('\n').map(l => l.replace(/\t/g, '    '));
+      const description = document.getElementById('description').value.trim();
+      const importStr = document.getElementById('import').value.trim();
+
+      let snippetObj = {
+        prefix: prefix,
+        body: body
+      };
+      if (description) snippetObj.description = description;
+      if (importStr) snippetObj.import = importStr;
+
+      // --- Affichage propriété seule (no brackets) ---
+      const propString = JSON.stringify({[name]: snippetObj}, null, 2)
+        .replace(/^\{\n/, '')    // remove leading {
+        .replace(/\n\}$/, '');   // remove trailing }
+
+      document.getElementById('output').style.display = '';
+      document.getElementById('snippetResult').textContent = propString;
+    });
+  </script>
+</body>
+</html>

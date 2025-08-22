@@ -15,19 +15,8 @@
     "description": "useEffect",
     "import": "import {useEffect} from 'react'"
   },
-  "useState": {
+  "react_state": {
     "prefix": "us",
-    "body": ["const [$1, ${1/(.)(.*)/${1:/upcase}${2}/}]= React.useState($3)"],
-    "description": "useState",
-    "import": "import {useState} from 'react'"
-  },
-  "react component": {
-    "prefix": "rc",
-    "body": [
-      "export default function ${1:maj}(){",
-      "  return <div>${1maj}</div>",
-      "}"
-    ],
-    "description": "react component"
+    "body": ["const [${1}, set${1cap}] = useState(${2});"]
   }
 }
