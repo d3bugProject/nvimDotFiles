@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Manuel d'utilisation des Snippets LuaSnip</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        --main-bg: #181c24;
+        --panel-bg: #232837;
+        --accent: #2ec4b6;
+        --accent2: #f3a712;
+        --text: #f8f8f2;
+        --code-bg: #23272e;
+        --border: #353b46;
+        --table-bg: #232837;
+        --table-head: #2ec4b6;
+        --mono: "Fira Mono", "Consolas", "Monaco", monospace;
+      }
+      body {
+        background: var(--main-bg);
+        color: var(--text);
+        font-family: "Inter", "Segoe UI", Arial, sans-serif;
+        line-height: 1.7;
+        margin: 0;
+        padding: 0;
+      }
+      header {
+        background: linear-gradient(90deg, var(--accent), var(--accent2));
+        padding: 2rem 0 1.2rem 0;
+        text-align: center;
+        margin-bottom: 2.5rem;
+        box-shadow: 0 4px 12px #0002;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 2.8rem;
+        color: #222;
+        letter-spacing: 2px;
+      }
+      .container {
+        max-width: 950px;
+        margin: 0 auto;
+        background: var(--panel-bg);
+        border-radius: 0.5rem;
+        box-shadow: 0 2px 8px #0004;
+        padding: 2rem 2.5rem 2.5rem 2.5rem;
+      }
+      h2 {
+        color: var(--accent);
+        font-size: 2rem;
+        margin-top: 2.5rem;
+        margin-bottom: 1.5rem;
+        letter-spacing: 1px;
+      }
+      h3 {
+        color: var(--accent2);
+        font-size: 1.3rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        letter-spacing: 0.5px;
+      }
+      code,
+      pre {
+        font-family: var(--mono);
+        font-size: 1em;
+      }
+      pre {
+        background: var(--code-bg);
+        border-radius: 0.3em;
+        padding: 1.1em 1.3em;
+        margin: 1.3em 0;
+        overflow-x: auto;
+        border: 1px solid var(--border);
+        color: #f3f3f3;
+      }
+      code {
+        background: #21242b;
+        padding: 0.18em 0.5em;
+        border-radius: 0.3em;
+        color: #f3a712;
+        font-size: 1.03em;
+      }
+      table {
+        border-collapse: collapse;
+        margin: 1em 0 2em 0;
+        width: 100%;
+        background: var(--table-bg);
+        border-radius: 6px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px #0002;
+      }
+      th,
+      td {
+        border: 1px solid var(--border);
+        padding: 0.6em 1em;
+        text-align: left;
+        font-size: 0.99em;
+      }
+      th {
+        background: var(--table-head);
+        color: #222;
+        font-weight: bold;
+      }
+      tr:nth-child(even) td {
+        background: #20232a;
+      }
+      .badge {
+        background: var(--accent2);
+        color: #222;
+        border-radius: 10px;
+        font-weight: bold;
+        padding: 0.14em 0.7em;
+        font-size: 0.98em;
+        margin-left: 0.3em;
+      }
+      ul,
+      ol {
+        margin-left: 1.3em;
+        margin-bottom: 1.6em;
+      }
+      .tip {
+        background: #2ec4b624;
+        border-left: 4px solid var(--accent);
+        padding: 1em 1.3em;
+        margin: 1.5em 0;
+        border-radius: 0.25em;
+        font-size: 1.02em;
+      }
+      .good {
+        color: #2ec4b6;
+        font-weight: bold;
+        margin-right: 0.4em;
+      }
+      .example-title {
+        color: var(--accent2);
+        font-size: 1.1em;
+        margin: 1.2em 0 0.2em 0;
+        font-style: italic;
+      }
+      @media (max-width: 700px) {
+        .container {
+          padding: 1rem 0.6rem 2rem 0.6rem;
+        }
+        header h1 {
+          font-size: 1.6rem;
+        }
+        h2 {
+          font-size: 1.3rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>📚 Manuel d'utilisation des Snippets LuaSnip</h1>
+    </header>
+    <div class="container">
+      <h2>📁 Structure des fichiers</h2>
+      <div class="tip">
+        Créez vos fichiers JSON de snippets dans :
+        <code>~/.config/nvim/lua/snippets/</code>
+      </div>
+      <pre>
+~/.config/nvim/
+├── lua/
+│   └── snippets/
+│       ├── react.json
+│       ├── javascript.json
+│       ├── general.json
+│       └── ...
+    </pre
+      >
+      <h2>📝 Format des snippets</h2>
+      <h3>Format VS Code <span class="badge">recommandé</span></h3>
+      <pre>
+{
+  "nom_du_snippet": {
+    "prefix": "trigger",
+    "body": ["ligne 1", "ligne 2 avec ${1:placeholder}"],
+    "description": "Description optionnelle",
+    "import": "import Something from 'somewhere';"
+  }
+}</pre
+      >
+      <h3>Format array (alternatif)</h3>
+      <pre>
+[
+  {
+    "trigger": "cc",
+    "snippet": "class ${1:ClassName} {\n  constructor() {\n    ${0}\n  }\n}",
+    "description": "Class component"
+  }
+]</pre
+      >
+
+      <h2>🎯 Placeholders</h2>
+      <h3>Placeholders simples</h3>
+      <table>
+        <tr>
+          <th>Syntaxe</th>
+          <th>Description</th>
+          <th>Exemple</th>
+        </tr>
+        <tr>
+          <td><code>$1</code></td>
+          <td>Premier placeholder</td>
+          <td><code>function ${1}() {}</code></td>
+        </tr>
+        <tr>
+          <td><code>$2</code></td>
+          <td>Deuxième placeholder</td>
+          <td><code>const ${1} = ${2};</code></td>
+        </tr>
+        <tr>
+          <td><code>$0</code></td>
+          <td>Dernière position du curseur</td>
+          <td><code>return ${1};$0</code></td>
+        </tr>
+      </table>
+      <div class="example-title">Exemple :</div>
+      <pre>
+{
+  "function": {
+    "prefix": "fn",
+    "body": [
+      "function ${1:name}(${2:params}) {",
+      "  ${3:// body}",
+      "  return ${0};",
+      "}"
+    ]
+  }
+}</pre
+      >
+      <h3>Placeholders avec valeurs par défaut</h3>
+      <table>
+        <tr>
+          <th>Syntaxe</th>
+          <th>Description</th>
+          <th>Exemple</th>
+        </tr>
+        <tr>
+          <td><code>${1:default}</code></td>
+          <td>Placeholder avec valeur par défaut</td>
+          <td><code>const ${1:myVar} = null;</code></td>
+        </tr>
+        <tr>
+          <td><code>${2:hello world}</code></td>
+          <td>Valeur par défaut multi-mots</td>
+          <td><code>console.log("${2:hello world}");</code></td>
+        </tr>
+      </table>
+      <div class="example-title">Exemple :</div>
+      <pre>
+{
+  "react_state": {
+    "prefix": "us",
+    "body": ["const [${1:state}, set${1cap:State}] = useState(${2:null});"]
+  }
+}</pre
+      >
+
+      <h2>🔄 Transformations de placeholders</h2>
+      <h3>Transformations de casse</h3>
+      <table>
+        <tr>
+          <th>Syntaxe</th>
+          <th>Résultat</th>
+          <th>Exemple d'entrée → Sortie</th>
+        </tr>
+        <tr>
+          <td><code>${1maj}</code></td>
+          <td>Première lettre majuscule</td>
+          <td><code>hello</code> → <code>Hello</code></td>
+        </tr>
+        <tr>
+          <td><code>${1cap}</code></td>
+          <td>Première lettre majuscule</td>
+          <td><code>world</code> → <code>World</code></td>
+        </tr>
+        <tr>
+          <td><code>${1upper}</code></td>
+          <td>Tout en majuscule</td>
+          <td><code>hello</code> → <code>HELLO</code></td>
+        </tr>
+        <tr>
+          <td><code>${1lower}</code></td>
+          <td>Tout en minuscule</td>
+          <td><code>HELLO</code> → <code>hello</code></td>
+        </tr>
+        <tr>
+          <td><code>${1pascal}</code></td>
+          <td>PascalCase</td>
+          <td><code>my_var</code> → <code>MyVar</code></td>
+        </tr>
+        <tr>
+          <td><code>${1camel}</code></td>
+          <td>camelCase</td>
+          <td><code>my_var</code> → <code>myVar</code></td>
+        </tr>
+        <tr>
+          <td><code>${1snake}</code></td>
+          <td>snake_case</td>
+          <td><code>MyVar</code> → <code>my_var</code></td>
+        </tr>
+      </table>
+      <div class="example-title">Exemple :</div>
+      <pre>
+{
+  "react_component": {
+    "prefix": "rfc",
+    "body": [
+      "const ${1pascal} = () => {",
+      "  return &lt;div className=\"${1snake}\"&gt;${2}&lt;/div&gt;;",
+      "};",
+      "",
+      "export default ${1pascal};"
+    ]
+  }
+}</pre
+      >
+      <h3>Avec valeurs par défaut et transformations</h3>
+      <pre>
+{
+  "class_component": {
+    "prefix": "cc",
+    "body": [
+      "class ${1maj:Component} extends React.Component {",
+      "  constructor(props) {",
+      "    super(props);",
+      "    this.state = { ${2:loading}: ${3:false} };",
+      "  }",
+      "}"
+    ]
+  }
+}</pre
+      >
+
+      <h2>🗂️ Variables de fichier (TM_*)</h2>
+      <h3>Variables de nom de fichier</h3>
+      <table>
+        <tr>
+          <th>Variable</th>
+          <th>Description</th>
+          <th>Exemple (fichier: <code>user-profile.tsx</code>)</th>
+        </tr>
+        <tr>
+          <td><code>${TM_FILENAME}</code></td>
+          <td>Nom complet avec extension</td>
+          <td><code>user-profile.tsx</code></td>
+        </tr>
+        <tr>
+          <td><code>${TM_FILENAME_BASE}</code></td>
+          <td>Nom sans extension</td>
+          <td><code>user-profile</code></td>
+        </tr>
+        <tr>
+          <td><code>${TM_FILENAME_PASCAL}</code></td>
+          <td>PascalCase</td>
+          <td><code>UserProfile</code></td>
+        </tr>
+        <tr>
+          <td><code>${TM_FILENAME_CAMEL}</code></td>
+          <td>camelCase</td>
+          <td><code>userProfile</code></td>
+        </tr>
+        <tr>
+          <td><code>${TM_FILENAME_SNAKE}</code></td>
+          <td>snake_case</td>
+          <td><code>user_profile</code></td>
+        </tr>
+        <tr>
+          <td><code>${TM_FILENAME_KEBAB}</code></td>
+          <td>kebab-case</td>
+          <td><code>user-profile</code></td>
+        </tr>
+        <tr>
+          <td><code>${TM_FILENAME_UPPER}</code></td>
+          <td>MAJUSCULES</td>
+          <td><code>USER-PROFILE</code></td>
+        </tr>
+        <tr>
+          <td><code>${TM_FILENAME_LOWER}</code></td>
+          <td>minuscules</td>
+          <td><code>user-profile</code></td>
+        </tr>
+      </table>
+      <div class="example-title">Exemple :</div>
+      <pre>
+{
+  "react_component": {
+    "prefix": "rfc",
+    "body": [
+      "import React from 'react';",
+      "",
+      "interface ${TM_FILENAME_PASCAL}Props {",
+      "  children?: React.ReactNode;",
+      "}",
+      "",
+      "const ${TM_FILENAME_PASCAL}: React.FC&lt;${TM_FILENAME_PASCAL}Props&gt; = ({ children }) =&gt; {",
+      "  return (",
+      "    &lt;div className=\"${TM_FILENAME_KEBAB}\"&gt;{children}&lt;/div&gt;",
+      "  );",
+      "};",
+      "",
+      "export default ${TM_FILENAME_PASCAL};"
+    ]
+  }
+}</pre
+      >
+      <h3>Variables de chemin</h3>
+      <table>
+        <tr>
+          <th>Variable</th>
+          <th>Description</th>
+          <th>Exemple</th>
+        </tr>
+        <tr>
+          <td><code>${TM_DIRECTORY}</code></td>
+          <td>Nom du dossier parent</td>
+          <td><code>components</code></td>
+        </tr>
+        <tr>
+          <td><code>${TM_FILEPATH}</code></td>
+          <td>Chemin complet</td>
+          <td><code>/home/user/project/src/components/Button.tsx</code></td>
+        </tr>
+        <tr>
+          <td><code>${TM_FILENAME_DIRECTORY}</code></td>
+          <td>Chemin du dossier</td>
+          <td><code>/home/user/project/src/components</code></td>
+        </tr>
+      </table>
+
+      <h2>📅 Variables de date et heure</h2>
+      <table>
+        <tr>
+          <th>Variable</th>
+          <th>Description</th>
+          <th>Exemple</th>
+        </tr>
+        <tr>
+          <td><code>${CURRENT_YEAR}</code></td>
+          <td>Année actuelle</td>
+          <td><code>2024</code></td>
+        </tr>
+        <tr>
+          <td><code>${CURRENT_MONTH}</code></td>
+          <td>Mois (numérique)</td>
+          <td><code>03</code></td>
+        </tr>
+        <tr>
+          <td><code>${CURRENT_DATE}</code></td>
+          <td>Jour du mois</td>
+          <td><code>15</code></td>
+        </tr>
+        <tr>
+          <td><code>${CURRENT_HOUR}</code></td>
+          <td>Heure (24h)</td>
+          <td><code>14</code></td>
+        </tr>
+        <tr>
+          <td><code>${CURRENT_MINUTE}</code></td>
+          <td>Minute</td>
+          <td><code>30</code></td>
+        </tr>
+        <tr>
+          <td><code>${CURRENT_MONTH_NAME}</code></td>
+          <td>Nom du mois</td>
+          <td><code>March</code></td>
+        </tr>
+        <tr>
+          <td><code>${CURRENT_DAY_NAME}</code></td>
+          <td>Nom du jour</td>
+          <td><code>Friday</code></td>
+        </tr>
+      </table>
+      <div class="example-title">Exemple :</div>
+      <pre>
+{
+  "header_comment": {
+    "prefix": "header",
+    "body": [
+      "/**",
+      " * @file ${TM_FILENAME}",
+      " * @author ${1:Your Name}",
+      " * @date ${CURRENT_DATE}/${CURRENT_MONTH}/${CURRENT_YEAR}",
+      " * @description ${2:File description}",
+      " */"
+    ]
+  }
+}</pre
+      >
+
+      <h2>🏢 Variables de workspace</h2>
+      <table>
+        <tr>
+          <th>Variable</th>
+          <th>Description</th>
+          <th>Exemple</th>
+        </tr>
+        <tr>
+          <td><code>${WORKSPACE_NAME}</code></td>
+          <td>Nom du projet</td>
+          <td><code>my-awesome-project</code></td>
+        </tr>
+        <tr>
+          <td><code>${WORKSPACE_FOLDER}</code></td>
+          <td>Chemin du workspace</td>
+          <td><code>/home/user/projects/my-awesome-project</code></td>
+        </tr>
+      </table>
+
+      <h2>🎲 Variables utilitaires</h2>
+      <table>
+        <tr>
+          <th>Variable</th>
+          <th>Description</th>
+          <th>Exemple</th>
+        </tr>
+        <tr>
+          <td><code>${UUID}</code></td>
+          <td>UUID généré</td>
+          <td><code>f47ac10b-58cc-4372-a567-0e02b2c3d479</code></td>
+        </tr>
+      </table>
+
+      <h2>📦 Imports automatiques</h2>
+      <div class="tip">
+        Ajoutez un import automatique avec la propriété <code>import</code> :
+      </div>
+      <pre>
+{
+  "react_state": {
+    "prefix": "us",
+    "body": "const [${1:state}, set${1cap}] = useState(${2:null});",
+    "import": "import { useState } from 'react';"
+  },
+
+  "styled_component": {
+    "prefix": "sc",
+    "body": [
+      "const ${TM_FILENAME_PASCAL} = styled.div`",
+      "  ${1:/* styles */}",
+      "`;"
+    ],
+    "import": "import styled from 'styled-components';"
+  }
+}</pre
+      >
+      <div>
+        L'import sera automatiquement ajouté en haut du fichier
+        <span class="good">s'il n'existe pas déjà</span>.
+      </div>
+
+      <h2>📋 Exemples complets</h2>
+      <h3>React Component avec TypeScript</h3>
+      <pre>
+{
+  "react_ts_component": {
+    "prefix": "rtsc",
+    "body": [
+      "import React from 'react';",
+      "",
+      "interface ${TM_FILENAME_PASCAL}Props {",
+      "  ${1:children?: React.ReactNode;}",
+      "}",
+      "",
+      "const ${TM_FILENAME_PASCAL}: React.FC&lt;${TM_FILENAME_PASCAL}Props&gt; = ({",
+      "  ${2:children}",
+      "}) =&gt; {",
+      "  return (",
+      "    &lt;${3:div} className=\"${TM_FILENAME_KEBAB}\"&gt;",
+      "      {${2:children}}",
+      "    &lt;/${3:div}&gt;",
+      "  );",
+      "};",
+      "",
+      "export default ${TM_FILENAME_PASCAL};"
+    ]
+  }
+}</pre
+      >
+
+      <h3>Test unitaire</h3>
+      <pre>
+{
+  "vitest_test": {
+    "prefix": "test",
+    "body": [
+      "import { describe, it, expect } from 'vitest';",
+      "import { ${TM_FILENAME_BASE} } from './${TM_FILENAME_BASE}';",
+      "",
+      "describe('${TM_FILENAME_BASE}', () => {",
+      "  it('${1:should work correctly}', () => {",
+      "    ${2:// Arrange}",
+      "    ${3:// Act}",
+      "    ${4:// Assert}",
+      "    expect(${5:true}).toBe(${6:true});",
+      "  });",
+      "});"
+    ]
+  }
+}</pre
+      >
+
+      <h3>Express Route</h3>
+      <pre>
+{
+  "express_route": {
+    "prefix": "route",
+    "body": [
+      "router.${1|get,post,put,delete|}('/${2:path}', async (req, res) => {",
+      "  try {",
+      "    ${3:// Route logic}",
+      "    res.json({ ${4:success: true} });",
+      "  } catch (error) {",
+      "    res.status(500).json({ error: error.message });",
+      "  }",
+      "});"
+    ],
+    "import": "import express from 'express';"
+  }
+}</pre
+      >
+
+      <h2>🔧 Commandes utiles</h2>
+      <h3>Dans Neovim</h3>
+      <ul>
+        <li><code>:SnippetsReload</code> – Recharger tous les snippets</li>
+        <li>
+          <code>:SnippetsList</code> – Afficher la liste des snippets chargés
+        </li>
+      </ul>
+      <h3>Utilisation</h3>
+      <ol>
+        <li>Tapez le <b>prefix</b> du snippet</li>
+        <li>Appuyez sur <b>Tab</b> pour l'activer</li>
+        <li>Tapez le contenu du premier placeholder</li>
+        <li>Appuyez sur <b>Tab</b> pour passer au suivant</li>
+        <li><b>Shift+Tab</b> pour revenir en arrière</li>
+      </ol>
+
+      <h2>💡 Bonnes pratiques</h2>
+      <h3>Organisation des fichiers</h3>
+      <ul>
+        <li>
+          Un fichier par langage/framework : <code>react.json</code>,
+          <code>vue.json</code>, <code>python.json</code>
+        </li>
+        <li>
+          Grouper par catégories : <code>components.json</code>,
+          <code>tests.json</code>, <code>utils.json</code>
+        </li>
+      </ul>
+      <h3>Nommage des triggers</h3>
+      <ul>
+        <li>
+          Court mais descriptif : <code>rfc</code> (React Function Component)
+        </li>
+        <li>
+          Logique cohérente : <code>us</code> (<i>useState</i>),
+          <code>ue</code> (<i>useEffect</i>)
+        </li>
+        <li>Éviter les conflits avec les mots existants</li>
+      </ul>
+      <h3>Structure des snippets</h3>
+      <pre>
+{
+  "nom_descriptif": {
+    "prefix": "trigger_court",
+    "body": [
+      "// Utilisez des arrays pour les lignes multiples",
+      "// ${1:placeholder_avec_description}",
+      "// Terminez par $0 pour la position finale"
+    ],
+    "description": "Description claire pour l'autocomplétion"
+  }
+}</pre
+      >
+      <h3>Exemples d'organisation</h3>
+      <div class="example-title"><b>react.json</b></div>
+      <pre>
+{
+  "react_function_component": { "prefix": "rfc", ... },
+  "react_class_component": { "prefix": "rcc", ... },
+  "use_state": { "prefix": "us", ... },
+  "use_effect": { "prefix": "ue", ... }
+}</pre
+      >
+      <div class="example-title"><b>tests.json</b></div>
+      <pre>
+{
+  "describe_block": { "prefix": "desc", ... },
+  "test_case": { "prefix": "test", ... },
+  "before_each": { "prefix": "be", ... }
+}</pre
+      >
+      <hr />
+      <div style="text-align: center; font-size: 1.12em; margin-top: 2.5em">
+        <b
+          >Ce système de snippets vous permet de coder beaucoup plus rapidement
+          en automatisant les patterns répétitifs !</b
+        >
+        ⚡
+      </div>
+    </div>
+  </body>
+</html>

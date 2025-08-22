@@ -1,150 +1,10 @@
-# ⚡️ My Neovim Config — Modular, Fast & Developer Friendly
+# Manuel d'utilisation des Snippets LuaSnip
 
-Welcome to my Neovim configuration!  
-This setup is designed for **maximum productivity**, modularity, and a modern developer experience.  
-Whether you code in JavaScript/TypeScript, React, or just want a clean, efficient editor, this config is for you.
+## 📁 Structure des fichiers
 
----
+Créez vos fichiers JSON de snippets dans : `~/.config/nvim/lua/snippets/`
 
-## 🚀 Features
-
-- **🧩 Modular structure:** Drop new keymaps/plugins/snippets in dedicated folders, they’re auto-loaded.
-- **🎨 Beautiful theme:** Solarized Osaka, optimized for JavaScript/React.
-- **⚡️ Fast startup:** No lag, no slow animations.
-- **🧠 Smart autocomplete:** CMP & Copilot for blazing fast coding. (Copilot is not active by default you have to activate it by make enabled=true in the plugin file)
-- **📦 Pre-configured tools:** LSP, formatting, file explorer, status line, import management, and more.
-- **💡 Easily hackable:** Every config is in a self-contained file.
-- **🔖 Ready for snippets:** Modular snippet system with import support.
-
----
-
-## 📁 File Structure
-
-```bash
-.
-├── init.lua                  # Entry point
-├── lazy-lock.json            # Plugin lockfile (auto-managed)
-├── lazyvim.json              # LazyVim config
-├── stylua.toml               # (Legacy) Formatter config
-├── lua/
-│   ├── config/
-│   │   ├── autocmds.lua      # (Currently empty - autocommands are moved to plugins)
-│   │   ├── keymaps.lua       # Loads all keymaps in lua/keymaps/
-│   │   ├── lazy.lua          # Disables nvim's default file explorer
-│   │   └── options.lua       # Vanilla options
-│   ├── keymaps/
-│   │   ├── buffers.lua
-│   │   ├── fileControl.lua
-│   │   ├── navigation.lua
-│   │   ├── neoTree.lua
-│   │   ├── refreshConfig.lua
-│   │   └── selection.lua
-│   ├── plugins/
-│   │   ├── auto-js-config.lua    # Auto-create jsconfig.json per JS project
-│   │   ├── cmp.lua               # CMP completion engine settings
-│   │   ├── colorScheme.lua       # Theme
-│   │   ├── conform.lua           # Formatter
-│   │   ├── copilot.lua           # GitHub Copilot
-│   │   ├── desableMiniAnimate.lua# Disables slow animations
-│   │   ├── hop.lua               # Fast navigation
-│   │   ├── lualine.lua           # Minimal statusline
-│   │   ├── neoTree.lua           # File explorer
-│   │   ├── nvimColorizer.lua     # Color highlighting
-│   │   ├── oil.lua               # Modern file manager
-│   │   ├── rainbowDelemiter.lua  # Rainbow parentheses
-│   │   ├── snacks.lua            # Extra utilities
-│   │   ├── snippets.lua          # Enhanced snippet support (with imports)
-│   │   ├── todoCmts.lua          # TODO comments
-│   │   └── typescriptTools.lua   # TS tools, auto-imports, error handling
-│   └── snippets/
-│       └── basic.json            # Your snippets here!
 ```
-
----
-
-## ✨ Highlights
-
-### 🔑 Keymaps
-
-- All custom keymaps are in `lua/keymaps/`.
-- To add a new one, just drop a `.lua` file in that folder!
-- They’re auto-loaded and easy to organize by feature or language.
-
-### 🧩 Plugins
-
-- Plugins are defined in `lua/plugins/` as separate files.
-- Each file returns a table describing the plugin and its config.
-- Add/remove/modify plugins by just editing or adding files.
-
-### 🚀 Autocompletion & Snippets
-
-- **CMP** gives you fast, context-aware code completion.
-- **GitHub Copilot** is enabled for smart suggestions.
-- Snippet system supports imports for more flexible templates.
-
-### 📂 File Explorer & Navigation
-
-- **Neo-tree** replaces the default file explorer for a better UX.
-- **Hop** lets you jump anywhere on the screen with minimal keystrokes.
-- **Oil**: modern file manager, a must-have!
-
-### 🎨 Theme & UI
-
-- **Solarized Osaka**: my favorite for JavaScript/React.
-- **Lualine**: minimal, focused statusline.
-- **No slow animations** (especially on low-end machines).
-
-### 🛠️ Formatting & Linting
-
-- **Conform**: for code formatting.
-- **typescriptTools**: for organizing imports and clean TypeScript error display.
-
----
-
-## 🧑‍💻 How to Use
-
-1. **Clone this repo** into your `~/.config/nvim` (or wherever you keep your Neovim config):
-   ```bash
-   git clone https://github.com/d3bugProject/nvimDotFiles.git ~/.config/nvim
-   ```
-2. **Open Neovim** and let LazyVim install everything.
-3. **Restart Neovim** after first launch.
-4. **Customize**:
-   - Add your keymaps in `lua/keymaps/`
-   - Tweak or add plugins in `lua/plugins/`
-   - Add your snippets in `lua/snippets/`
-
----
-
-## 🗝️ nvim-surround: Keymaps essentiels
-
-> ⚡️ Plugin recommandé : [`kylechui/nvim-surround`](https://github.com/kylechui/nvim-surround)  
-> Ajoute, change et supprime les entourants (parenthèses, guillemets, tags, etc.) en un clin d'œil !
->
-> **Astuce** : Pour entourer avec un tag HTML, utilise `ysiwt`, tape le nom du tag, puis `<Entrée>`.  
-> Voici un mémo des principales commandes :
-
-| Commande              | Effet                                                          | Exemple                            |
-| --------------------- | -------------------------------------------------------------- | ---------------------------------- |
-| `ys<motion><char>`    | Ajoute un entourant autour du texte sélectionné par `<motion>` | `ysiw"` → `"mot"`                  |
-| `yss<char>`           | Ajoute un entourant à la ligne entière                         | `yss{` → `{ma ligne}`              |
-| `cs<old><new>`        | Change l’entourant existant pour un autre                      | `cs"'` → remplace "..." par '...'  |
-| `ds<char>`            | Supprime l’entourant                                           | `ds"` → supprime les guillemets    |
-| `S<char>` (en visuel) | Entoure la sélection visuelle                                  | (sélection) `S[` → `[texte]`       |
-| `ysiwt` puis `<tag>`  | Entoure avec un tag HTML personnalisé                          | `ysiwt` → `div` → `<div>mot</div>` |
-
-**Principaux `<char>` :** `"`, `'`, `(`, `[`, `{`, `<`, `t` (tag HTML)
-
----
-
-## 📝 Snippet System Guide
-
-### 📦 Structure des snippets
-
-Créez vos fichiers JSON de snippets dans :  
-`~/.config/nvim/lua/snippets/`
-
-```bash
 ~/.config/nvim/
 ├── lua/
 │   └── snippets/
@@ -154,9 +14,9 @@ Créez vos fichiers JSON de snippets dans :
 │       └── ...
 ```
 
-### 📝 Format des snippets
+## 📝 Format des snippets
 
-#### Format VS Code (recommandé)
+### Format VS Code (recommandé)
 
 ```json
 {
@@ -169,7 +29,7 @@ Créez vos fichiers JSON de snippets dans :
 }
 ```
 
-#### Format array (alternatif)
+### Format array (alternatif)
 
 ```json
 [
@@ -181,9 +41,9 @@ Créez vos fichiers JSON de snippets dans :
 ]
 ```
 
-### 🎯 Placeholders
+## 🎯 Placeholders
 
-#### Placeholders simples
+### Placeholders simples
 
 | Syntaxe | Description                  | Exemple              |
 | ------- | ---------------------------- | -------------------- |
@@ -191,7 +51,7 @@ Créez vos fichiers JSON de snippets dans :
 | `$2`    | Deuxième placeholder         | `const ${1} = ${2};` |
 | `$0`    | Dernière position du curseur | `return ${1};$0`     |
 
-**Exemple :**
+**Exemple :**
 
 ```json
 {
@@ -207,14 +67,14 @@ Créez vos fichiers JSON de snippets dans :
 }
 ```
 
-#### Placeholders avec valeurs par défaut
+### Placeholders avec valeurs par défaut
 
 | Syntaxe            | Description                        | Exemple                            |
 | ------------------ | ---------------------------------- | ---------------------------------- |
 | `${1:default}`     | Placeholder avec valeur par défaut | `const ${1:myVar} = null;`         |
 | `${2:hello world}` | Valeur par défaut multi-mots       | `console.log("${2:hello world}");` |
 
-**Exemple :**
+**Exemple :**
 
 ```json
 {
@@ -225,9 +85,9 @@ Créez vos fichiers JSON de snippets dans :
 }
 ```
 
-### 🔄 Transformations de placeholders
+## 🔄 Transformations de placeholders
 
-#### Transformations de casse
+### Transformations de casse
 
 | Syntaxe      | Résultat                  | Exemple d'entrée → Sortie |
 | ------------ | ------------------------- | ------------------------- |
@@ -239,7 +99,7 @@ Créez vos fichiers JSON de snippets dans :
 | `${1camel}`  | camelCase                 | `my_var` → `myVar`        |
 | `${1snake}`  | snake_case                | `MyVar` → `my_var`        |
 
-**Exemple :**
+**Exemple :**
 
 ```json
 {
@@ -256,7 +116,7 @@ Créez vos fichiers JSON de snippets dans :
 }
 ```
 
-#### Avec valeurs par défaut et transformations
+### Avec valeurs par défaut et transformations
 
 ```json
 {
@@ -274,9 +134,9 @@ Créez vos fichiers JSON de snippets dans :
 }
 ```
 
-### 🗂️ Variables de fichier (TM\_\*)
+## 🗂️ Variables de fichier (TM\_\*)
 
-#### Variables de nom de fichier
+### Variables de nom de fichier
 
 | Variable                | Description                | Exemple (fichier: `user-profile.tsx`) |
 | ----------------------- | -------------------------- | ------------------------------------- |
@@ -289,7 +149,7 @@ Créez vos fichiers JSON de snippets dans :
 | `${TM_FILENAME_UPPER}`  | MAJUSCULES                 | `USER-PROFILE`                        |
 | `${TM_FILENAME_LOWER}`  | minuscules                 | `user-profile`                        |
 
-**Exemple :**
+**Exemple :**
 
 ```json
 {
@@ -314,7 +174,7 @@ Créez vos fichiers JSON de snippets dans :
 }
 ```
 
-#### Variables de chemin
+### Variables de chemin
 
 | Variable                   | Description           | Exemple                                        |
 | -------------------------- | --------------------- | ---------------------------------------------- |
@@ -322,7 +182,7 @@ Créez vos fichiers JSON de snippets dans :
 | `${TM_FILEPATH}`           | Chemin complet        | `/home/user/project/src/components/Button.tsx` |
 | `${TM_FILENAME_DIRECTORY}` | Chemin du dossier     | `/home/user/project/src/components`            |
 
-### 📅 Variables de date et heure
+## 📅 Variables de date et heure
 
 | Variable                | Description      | Exemple  |
 | ----------------------- | ---------------- | -------- |
@@ -334,7 +194,7 @@ Créez vos fichiers JSON de snippets dans :
 | `${CURRENT_MONTH_NAME}` | Nom du mois      | `March`  |
 | `${CURRENT_DAY_NAME}`   | Nom du jour      | `Friday` |
 
-**Exemple :**
+**Exemple :**
 
 ```json
 {
@@ -352,22 +212,22 @@ Créez vos fichiers JSON de snippets dans :
 }
 ```
 
-### 🏢 Variables de workspace
+## 🏢 Variables de workspace
 
 | Variable              | Description         | Exemple                                  |
 | --------------------- | ------------------- | ---------------------------------------- |
 | `${WORKSPACE_NAME}`   | Nom du projet       | `my-awesome-project`                     |
 | `${WORKSPACE_FOLDER}` | Chemin du workspace | `/home/user/projects/my-awesome-project` |
 
-### 🎲 Variables utilitaires
+## 🎲 Variables utilitaires
 
 | Variable  | Description | Exemple                                |
 | --------- | ----------- | -------------------------------------- |
 | `${UUID}` | UUID généré | `f47ac10b-58cc-4372-a567-0e02b2c3d479` |
 
-### 📦 Imports automatiques
+## 📦 Imports automatiques
 
-Ajoutez un import automatique avec la propriété `import` :
+Ajoutez un import automatique avec la propriété `import` :
 
 ```json
 {
@@ -391,9 +251,9 @@ Ajoutez un import automatique avec la propriété `import` :
 
 L'import sera automatiquement ajouté en haut du fichier s'il n'existe pas déjà.
 
-### 📋 Exemples complets
+## 📋 Exemples complets
 
-#### React Component avec TypeScript
+### React Component avec TypeScript
 
 ```json
 {
@@ -422,7 +282,7 @@ L'import sera automatiquement ajouté en haut du fichier s'il n'existe pas déj�
 }
 ```
 
-#### Test unitaire
+### Test unitaire
 
 ```json
 {
@@ -445,7 +305,7 @@ L'import sera automatiquement ajouté en haut du fichier s'il n'existe pas déj�
 }
 ```
 
-#### Express Route
+### Express Route
 
 ```json
 {
@@ -466,14 +326,14 @@ L'import sera automatiquement ajouté en haut du fichier s'il n'existe pas déj�
 }
 ```
 
-### 🔧 Commandes utiles
+## 🔧 Commandes utiles
 
-#### Dans Neovim
+### Dans Neovim
 
 - `:SnippetsReload` - Recharger tous les snippets
 - `:SnippetsList` - Afficher la liste des snippets chargés
 
-#### Utilisation
+### Utilisation
 
 1. Tapez le `prefix` du snippet
 2. Appuyez sur `Tab` pour l'activer
@@ -481,20 +341,20 @@ L'import sera automatiquement ajouté en haut du fichier s'il n'existe pas déj�
 4. Appuyez sur `Tab` pour passer au suivant
 5. `Shift+Tab` pour revenir en arrière
 
-### 💡 Bonnes pratiques
+## 💡 Bonnes pratiques
 
-#### Organisation des fichiers
+### Organisation des fichiers
 
 - Un fichier par langage/framework : `react.json`, `vue.json`, `python.json`
 - Grouper par catégories : `components.json`, `tests.json`, `utils.json`
 
-#### Nommage des triggers
+### Nommage des triggers
 
 - Court mais descriptif : `rfc` (React Function Component)
 - Logique cohérente : `us` (useState), `ue` (useEffect)
 - Éviter les conflits avec les mots existants
 
-#### Structure des snippets
+### Structure des snippets
 
 ```json
 {
@@ -510,7 +370,7 @@ L'import sera automatiquement ajouté en haut du fichier s'il n'existe pas déj�
 }
 ```
 
-#### Exemples d'organisation
+### Exemples d'organisation
 
 **`react.json`**
 
@@ -536,34 +396,3 @@ L'import sera automatiquement ajouté en haut du fichier s'il n'existe pas déj�
 ---
 
 _Ce système de snippets vous permet de coder beaucoup plus rapidement en automatisant les patterns répétitifs !_ ⚡
-
----
-
-## 📝 Next Steps
-
-- [ ] Fill the `lua/snippets/` folder with more powerful templates!
-- [ ] Write docs for each plugin.
-- [ ] Tweak the color scheme for your taste.
-
----
-
-## ❤️ Credits
-
-- [LazyVim](https://lazyvim.org/)
-- [Solarized Osaka](https://github.com/kenchaaan/solarized-osaka.nvim)
-- [Neo-tree](https://github.com/nvim-neo-tree/neo-tree.nvim)
-- [Hop](https://github.com/phaazon/hop.nvim)
-- [kylechui/nvim-surround](https://github.com/kylechui/nvim-surround)
-- ...and all the amazing plugin authors!
-
----
-
-## 🗨️ Feedback & Ideas
-
-Feel free to open issues or PRs for suggestions, improvements, or bug reports!
-
----
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/nvim-lua/nvim-lua-guide/master/images/nvim-logo.png" width="80" alt="neovim logo" />
-</p>

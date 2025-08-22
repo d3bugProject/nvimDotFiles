@@ -17,24 +17,12 @@ return {
     -- Table pour stocker la correspondance trigger -> import
     local snippet_imports = {}
 
-    -- Fonction pour ajouter un import littéral en haut du fichier
-    local function add_import(import_statement)
-      if not import_statement or import_statement == "" then
-        return
-      end
-      local bufnr = vim.api.nvim_get_current_buf()
-      vim.api.nvim_buf_set_lines(bufnr, 0, 0, false, { import_statement })
-    end
-
-    -- Variables spéciales VS Code/TextMate
+    -- Variables spéciales VS Code/TextMate complètes
     local function get_special_variable(var_name)
       local special_vars = {
-        ["1maj"] = function(args)
-          local val = args and args[1] or ""
-          if not val or val == "" then
-            return ""
-          end
-          return val:sub(1, 1):upper() .. val:sub(2)
+        -- Variables de fichier
+        TM_FILENAME = function()
+          return vim.fn.expand("%:t")
         end,
         TM_FILENAME_BASE = function()
           local filename = vim.fn.expand("%:t:r")
@@ -47,21 +35,136 @@ return {
           end
           return filename:sub(1, 1):upper() .. filename:sub(2)
         end,
-        TM_FILENAME = function()
-          return vim.fn.expand("%:t")
+
+        -- Variables de formatage du nom de fichier (toutes basées sur TM_FILENAME_BASE sans extension)
+        TM_FILENAME_PASCAL = function()
+          local filename = vim.fn.expand("%:t:r") -- Sans extension
+          if filename == "" then
+            return "Component"
+          end
+          -- Convertir en PascalCase (my-component -> MyComponent)
+          local result = filename:gsub("[-_](%w)", function(c)
+            return c:upper()
+          end)
+          return result:sub(1, 1):upper() .. result:sub(2)
         end,
+        TM_FILENAME_CAMEL = function()
+          local filename = vim.fn.expand("%:t:r") -- Sans extension
+          if filename == "" then
+            return "component"
+          end
+          -- Convertir en camelCase (my-component -> myComponent)
+          local result = filename:gsub("[-_](%w)", function(c)
+            return c:upper()
+          end)
+          return result:sub(1, 1):lower() .. result:sub(2)
+        end,
+        TM_FILENAME_SNAKE = function()
+          local filename = vim.fn.expand("%:t:r") -- Sans extension
+          if filename == "" then
+            return "component"
+          end
+          -- Convertir en snake_case (MyComponent -> my_component)
+          return filename:gsub("(%u)", "_%1"):gsub("^_", ""):lower()
+        end,
+        TM_FILENAME_KEBAB = function()
+          local filename = vim.fn.expand("%:t:r") -- Sans extension
+          if filename == "" then
+            return "component"
+          end
+          -- Convertir en kebab-case (MyComponent -> my-component)
+          return filename:gsub("(%u)", "-%1"):gsub("^-", ""):lower()
+        end,
+        TM_FILENAME_UPPER = function()
+          local filename = vim.fn.expand("%:t:r") -- Sans extension
+          return filename:upper()
+        end,
+        TM_FILENAME_LOWER = function()
+          local filename = vim.fn.expand("%:t:r") -- Sans extension
+          return filename:lower()
+        end,
+
+        -- Variables de chemin
         TM_DIRECTORY = function()
           return vim.fn.expand("%:h:t")
         end,
         TM_FILEPATH = function()
           return vim.fn.expand("%:p")
         end,
+        TM_FILENAME_DIRECTORY = function()
+          return vim.fn.expand("%:h")
+        end,
+
+        -- Variables temporelles
+        CURRENT_YEAR = function()
+          return os.date("%Y")
+        end,
+        CURRENT_YEAR_SHORT = function()
+          return os.date("%y")
+        end,
+        CURRENT_MONTH = function()
+          return os.date("%m")
+        end,
+        CURRENT_MONTH_NAME = function()
+          return os.date("%B")
+        end,
+        CURRENT_MONTH_NAME_SHORT = function()
+          return os.date("%b")
+        end,
+        CURRENT_DATE = function()
+          return os.date("%d")
+        end,
+        CURRENT_DAY_NAME = function()
+          return os.date("%A")
+        end,
+        CURRENT_DAY_NAME_SHORT = function()
+          return os.date("%a")
+        end,
+        CURRENT_HOUR = function()
+          return os.date("%H")
+        end,
+        CURRENT_MINUTE = function()
+          return os.date("%M")
+        end,
+        CURRENT_SECOND = function()
+          return os.date("%S")
+        end,
+        CURRENT_SECONDS_UNIX = function()
+          return tostring(os.time())
+        end,
+
+        -- Variables de workspace
+        WORKSPACE_NAME = function()
+          local cwd = vim.fn.getcwd()
+          return vim.fn.fnamemodify(cwd, ":t")
+        end,
+        WORKSPACE_FOLDER = function()
+          return vim.fn.getcwd()
+        end,
+
+        -- Variables aléatoires/UUID
+        UUID = function()
+          local template = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
+          return string.gsub(template, "[xy]", function(c)
+            local v = (c == "x") and math.random(0, 0xf) or math.random(8, 0xb)
+            return string.format("%x", v)
+          end)
+        end,
+
+        -- Variables personnalisées existantes
+        ["1maj"] = function(args)
+          local val = args and args[1] or ""
+          if not val or val == "" then
+            return ""
+          end
+          return val:sub(1, 1):upper() .. val:sub(2)
+        end,
       }
 
       return special_vars[var_name]
     end
 
-    -- Parser amélioré pour les snippets avec gestion des échappements
+    -- Parser amélioré pour les snippets avec gestion des échappements et transformations
     local function parse_snippet_body(body)
       local nodes = {}
 
@@ -73,8 +176,8 @@ return {
       body = body:gsub("\\\\", "\\") -- Convertir \\ en backslash simple
 
       local lines = vim.split(body, "\n", { plain = true })
-
       local placeholder_values = {}
+
       for line_idx, line in ipairs(lines) do
         local col = 1
         while col <= #line do
@@ -85,32 +188,105 @@ return {
             end
             break
           end
+
           if dollar_pos > col then
             table.insert(nodes, t(line:sub(col, dollar_pos - 1)))
           end
+
           local after_dollar = line:sub(dollar_pos + 1)
           local brace_content = after_dollar:match("^{([^}]*)}")
+
           if brace_content then
-            local num, default_val = brace_content:match("^(%d+):(.*)$")
-            if num then
+            -- Gestion des placeholders avec transformations
+            local num, transform, default_val = brace_content:match("^(%d+)([a-zA-Z]+):(.*)$")
+            if not num then
+              -- Essayer sans transformation mais avec valeur par défaut
+              num, default_val = brace_content:match("^(%d+):(.*)$")
+            end
+            if not num then
+              -- Essayer juste avec transformation sans valeur par défaut
+              num, transform = brace_content:match("^(%d+)([a-zA-Z]+)$")
+            end
+
+            if num and transform then
+              if transform == "maj" or transform == "cap" or transform == "capitalize" then
+                -- Transformation en majuscule
+                table.insert(
+                  nodes,
+                  f(function(args)
+                    local val = args[1][1] or ""
+                    if not val or val == "" then
+                      return default_val or ""
+                    end
+                    return val:sub(1, 1):upper() .. val:sub(2)
+                  end, { tonumber(num) })
+                )
+              elseif transform == "upper" then
+                -- Tout en majuscule
+                table.insert(
+                  nodes,
+                  f(function(args)
+                    local val = args[1][1] or ""
+                    return val:upper()
+                  end, { tonumber(num) })
+                )
+              elseif transform == "lower" then
+                -- Tout en minuscule
+                table.insert(
+                  nodes,
+                  f(function(args)
+                    local val = args[1][1] or ""
+                    return val:lower()
+                  end, { tonumber(num) })
+                )
+              elseif transform == "snake" then
+                -- Conversion en snake_case
+                table.insert(
+                  nodes,
+                  f(function(args)
+                    local val = args[1][1] or ""
+                    return val:gsub("(%u)", "_%1"):gsub("^_", ""):lower()
+                  end, { tonumber(num) })
+                )
+              elseif transform == "camel" then
+                -- Conversion en camelCase
+                table.insert(
+                  nodes,
+                  f(function(args)
+                    local val = args[1][1] or ""
+                    return val
+                      :gsub("_(%w)", function(c)
+                        return c:upper()
+                      end)
+                      :gsub("^%u", string.lower)
+                  end, { tonumber(num) })
+                )
+              elseif transform == "pascal" then
+                -- Conversion en PascalCase
+                table.insert(
+                  nodes,
+                  f(function(args)
+                    local val = args[1][1] or ""
+                    local result = val:gsub("_(%w)", function(c)
+                      return c:upper()
+                    end)
+                    return result:sub(1, 1):upper() .. result:sub(2)
+                  end, { tonumber(num) })
+                )
+              else
+                -- Transformation inconnue, traiter comme placeholder normal
+                table.insert(nodes, i(tonumber(num), default_val or ""))
+              end
+            elseif num and default_val ~= "" then
+              -- Placeholder avec valeur par défaut
               table.insert(nodes, i(tonumber(num), default_val))
               placeholder_values[num] = default_val or ""
             elseif brace_content:match("^%d+$") then
+              -- Placeholder simple
               table.insert(nodes, i(tonumber(brace_content)))
               placeholder_values[brace_content] = ""
-            elseif brace_content:match("^%d+maj$") then
-              local base_num = brace_content:match("^(%d+)maj$")
-              table.insert(
-                nodes,
-                f(function(args)
-                  local val = args[1][1] or ""
-                  if not val or val == "" then
-                    return ""
-                  end
-                  return val:sub(1, 1):upper() .. val:sub(2)
-                end, { tonumber(base_num) })
-              )
             else
+              -- Variables spéciales existantes
               local var_func = get_special_variable(brace_content)
               if var_func then
                 table.insert(nodes, f(var_func, {}))
@@ -118,8 +294,10 @@ return {
                 table.insert(nodes, t(brace_content))
               end
             end
+
             col = dollar_pos + 1 + #brace_content + 2
           else
+            -- Placeholder simple sans accolades
             local num = after_dollar:match("^(%d+)")
             if num then
               table.insert(nodes, i(tonumber(num)))
@@ -131,6 +309,7 @@ return {
             end
           end
         end
+
         if line_idx < #lines then
           table.insert(nodes, t({ "", "" }))
         end
