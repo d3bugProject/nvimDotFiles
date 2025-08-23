@@ -1,0 +1,19 @@
+{
+  "div": {
+    "prefix": "div",
+    "body": ["<div> $1 </div>"],
+    "description": "simple div"
+  },
+  "div": {
+    "prefix": "dc",
+    "body": ["<div className={` $1 `}> $0 </div>"],
+    "description": "simple div with classname"
+  },
+  "input": {
+    "prefix": "inp",
+    "body": [
+      "<input name=\"$1\" className={` $3 `} onChange={handlechange} type={`$2`} required$0 />"
+    ],
+    "description": "simple input for react"
+  }
+}

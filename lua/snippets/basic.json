@@ -27,7 +27,7 @@
     "description": "function"
   },
   "export function or component": {
-    "prefix": "exfu",
+    "prefix": "exf",
     "body": [
       "export default function ${TM_FILENAME_PASCAL}(){",
       "  return $2",
@@ -35,14 +35,29 @@
     ],
     "description": "export function or component"
   },
-  "function": {
-    "prefix": "xxxx",
-    "body": ["$1    $2     $3    "],
-    "description": "function"
-  },
   "classname": {
     "prefix": "cn",
     "body": ["className={` $1 `}"],
     "description": "classname"
+  },
+  "console log": {
+    "prefix": "cl",
+    "body": ["console.log('${TM_FILENAME_BASE}', $1)"],
+    "description": "console"
+  },
+  "console.log json stringify": {
+    "prefix": "clj",
+    "body": ["console.log('${TM_FILENAME}', JSON.stringify($1, null, 2))"],
+    "description": "json stingify for great volume object that is not good displayed"
+  },
+  "map": {
+    "prefix": "map",
+    "body": ["$3.map((item, $1)=>{", "    return $2", "})", "$0"],
+    "description": "mapping array"
+  },
+  "map": {
+    "prefix": "mapr",
+    "body": ["{", "  $3.map((item, $1)=>{", "    return $2", "  })", "}", "$0"],
+    "description": "mapping array in react"
   }
 }
