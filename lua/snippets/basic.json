@@ -10,9 +10,13 @@
       " */"
     ]
   },
-
-  "arrow variable": {
-    "prefix": "av",
+  "to do": {
+    "prefix": "todo",
+    "body": ["/**", "* TODO: $1", "* pomodoro : ", "*/"],
+    "description": "to do a mettre au debut dun fichier"
+  },
+  "arrow variable with const": {
+    "prefix": "consarr",
     "body": ["const ${1} = ()=>{", "  ${2}", "}"],
     "description": "arrow variable"
   },
@@ -59,5 +63,20 @@
     "prefix": "mapr",
     "body": ["{", "  $3.map((item, $1)=>{", "    return $2", "  })", "}", "$0"],
     "description": "mapping array in react"
+  },
+  "try catch": {
+    "prefix": "try",
+    "body": [
+      "try {",
+      "   $1  ",
+      "} catch (error) {",
+      "  console.log('${TM_FILENAME}', error)",
+      " throw error",
+      "}finally{",
+      " $0",
+      "}",
+      ""
+    ],
+    "description": "try catch simple"
   }
 }

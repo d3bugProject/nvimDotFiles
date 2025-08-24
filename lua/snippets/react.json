@@ -41,5 +41,11 @@
       "}"
     ],
     "description": "handle change react function"
+  },
+  "navigate": {
+    "prefix": "nav",
+    "body": ["const nav = useNavigate()"],
+    "description": "useNavigate react router",
+    "import": "import { useNavigate } from \"react-router\";"
   }
 }

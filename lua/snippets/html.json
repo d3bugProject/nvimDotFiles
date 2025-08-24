@@ -15,5 +15,10 @@
       "<input name=\"$1\" className={` $3 `} onChange={handlechange} type={`$2`} required$0 />"
     ],
     "description": "simple input for react"
+  },
+  "html espace": {
+    "prefix": "espace",
+    "body": ["&nbsp;"],
+    "description": "espace simple en code machun"
   }
 }
